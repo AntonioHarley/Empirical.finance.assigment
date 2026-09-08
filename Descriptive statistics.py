@@ -40,15 +40,26 @@ StockReturns = StockReturns.sort_index()
 #Check if everything went well.
 print(StockReturns["Agric"].head())
 
+
 for industry in Industries:
-    #Plot of the monthly returns.
+    #Basic stats check
     mean = np.mean(StockReturns[industry])
-    std = np.std(StockReturns[industry])
+    std = np.std(StockReturns[industry]) 
     print( f"{mean} mean {industry} returns")
     print(f"{std} standard  deviation {industry} returns")
+    
+    
+    #Histogram for the monthly returns.
     plt.hist(StockReturns[industry], bins = 75, density = False)
     plt.xlabel(f"{industry} monthly return (%)")
     plt.ylabel("Frequency")
     plt.title(f"{industry} — Average Value Weighted Montly Returns")
+    plt.show()
+    
+    #Time-series for the montly returns.
+    plt.plot(StockReturns[industry])
+    plt.title(industry)
+    plt.xlabel("Date")
+    plt.ylabel("Monthly return (%)")
     plt.show()
 
