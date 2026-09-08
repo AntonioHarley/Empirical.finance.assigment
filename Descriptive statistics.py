@@ -1,11 +1,12 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 with open("49_Industry_Portfolios.csv") as file:
     lines = file.readlines()
     
 #The industries we chose for the assignment.
-Industries = ['Oil', 'Banks', 'Txtls', 'Toys', 'Rtail']
+Industries = ["Oil", "Banks", "Txtls", "Toys", "Rtail"]
 
 #Size header of the csv. 
 HeaderSpace = 11
@@ -28,6 +29,9 @@ StockReturns = pd.read_csv(
     na_values=[-99.99, -999],
 )
 
+#Strip padding spaces from the industry column names.
+StockReturns.columns = StockReturns.columns.str.strip()
+
 #Change the date to the right format.
 StockReturns.index = pd.to_datetime(StockReturns.index, format="%Y%m")
 StockReturns.index.name = "Date"
@@ -38,6 +42,10 @@ print(StockReturns["Agric"].head())
 
 for industry in Industries:
     #Plot of the monthly returns.
+    mean = np.mean(StockReturns[industry])
+    std = np.std(StockReturns[industry])
+    print( f"{mean} mean {industry} returns")
+    print(f"{std} standard  deviation {industry} returns")
     plt.hist(StockReturns[industry], bins = 75, density = False)
     plt.xlabel(f"{industry} monthly return (%)")
     plt.ylabel("Frequency")
