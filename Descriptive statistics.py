@@ -4,9 +4,14 @@ import matplotlib.pyplot as plt
 with open("49_Industry_Portfolios.csv") as file:
     lines = file.readlines()
     
+#The industries we chose for the assignment.
+Industries = ['Oil', 'Banks', 'Txtls', 'Toys', 'Rtail']
+
+#Size header of the csv. 
 HeaderSpace = 11
 FirstBlank = 0
 
+#We search for the line that is blank after the header of the csv.
 for i, line in enumerate(lines[HeaderSpace+1:], start = HeaderSpace + 1):
     if line.strip() == "":
         FirstBlank = i
@@ -28,7 +33,14 @@ StockReturns.index = pd.to_datetime(StockReturns.index, format="%Y%m")
 StockReturns.index.name = "Date"
 StockReturns = StockReturns.sort_index()
 
+#Check if everything went well.
 print(StockReturns["Agric"].head())
 
-plt.hist(StockReturns["Agric"], bins = 75, density = False)
-plt.show()
+for industry in Industries:
+    #Plot of the monthly returns.
+    plt.hist(StockReturns[industry], bins = 75, density = False)
+    plt.xlabel(f"{industry} monthly return (%)")
+    plt.ylabel("Frequency")
+    plt.title(f"{industry} — Average Value Weighted Montly Returns")
+    plt.show()
+
