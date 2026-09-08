@@ -29,3 +29,6 @@ StockReturns.index.name = "Date"
 StockReturns = StockReturns.sort_index()
 
 print(StockReturns["Agric"].head())
+
+plt.hist(StockReturns["Agric"], bins = 75, density = False)
+plt.show()
