@@ -32,9 +32,15 @@ raw["Date"] = pd.to_datetime(raw["Date"].astype(str), format="%Y%m%d")
 industries = ["Oil", "Banks", "Txtls", "Toys", "Rtail"]
 
 for industry in industries:
-    raw[industry] = pd.to_numeric(raw[industry], errors = "coerce")
-    raw.loc[raw[industry].isin([-99.99,-999]), industry] = np.nan
-    
+    raw[industries] = raw[industries].apply(
+        pd.to_numeric,
+        errors="coerce"
+    )
+
+    raw[industries] = raw[industries].replace(
+        [-99.99, -999],
+        np.nan
+    )    
 
 start_date = pd.Timestamp("1963-07-01")
 
