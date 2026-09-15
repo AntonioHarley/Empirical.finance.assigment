@@ -43,8 +43,8 @@ print(StockReturns["Agric"].head())
 
 for industry in Industries:
     #Basic stats check
-    mean = np.mean(StockReturns[industry])
-    std = np.std(StockReturns[industry]) 
+    mean = ((np.mean(StockReturns[industry]))**12) - 1
+    std = np.std(StockReturns[industry]) * np.sqrt(12)
     print( f"{mean} mean {industry} returns")
     print(f"{std} standard  deviation {industry} returns")
     
