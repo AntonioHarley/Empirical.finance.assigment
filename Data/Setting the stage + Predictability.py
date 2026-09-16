@@ -7,7 +7,7 @@ import io
 import statsmodels.api as sm
 import calendar
 
-data = Path(__file__).parent / "Data" / "49_Industry_Portfolios_Daily.csv"
+data = Path(__file__).parent / "49_Industry_Portfolios_Daily.csv"
 setting_outdir = Path(__file__).parent / "Setting the stage"
 predictive_outdir = Path(__file__).parent / "Predictability"
 
