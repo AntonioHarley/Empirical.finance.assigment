@@ -68,11 +68,14 @@ stats = pd.DataFrame({
     "Shapiro (P-value)": industry_returns.apply(lambda x: shapiro(x.dropna()).pvalue).round(4),
 })
 
-
+corr = industry_returns.corr()
 
 print(stats)
-stats_path = outdir / "Industry descriptive statistics"
+stats_path = outdir / "Industry descriptive statistics.csv"
+corr_path = outdir / "Industry correlation.csv"
+
 stats.to_csv(stats_path)
+corr.to_csv(stats_path)
 
 for industry in industries:
     plt.figure(figsize=(8, 5))
@@ -172,5 +175,3 @@ month_results.to_csv(
     index=False
 )
 
-print(monday_results)
-print(month_results)
