@@ -135,14 +135,9 @@ results = {
 
 for period, (start, end) in periods.items():
     period_returns = industry_returns.loc[start:end]
-    effects = [
-        ("monday", "Monday", period_returns.index.dayofweek == 0)
-    ]
+    effects = [("monday", "Monday", period_returns.index.dayofweek == 0)]
 
-    effects += [
-        ("month", calendar.month_abbr[m], period_returns.index.month == m)
-        for m in range(1, 13)
-    ]
+    effects += [("month", calendar.month_abbr[m], period_returns.index.month == m) for m in range(1, 13)]
 
     for effect_type, effect_name, dummy in effects:
         X = pd.DataFrame({
@@ -154,28 +149,21 @@ for period, (start, end) in periods.items():
             model = sm.OLS(period_returns[industry], X).fit(cov_type="HC0")
 
             results[effect_type].append({
-                "Period": period,
-                "Industry": industry,
-                "Effect": effect_name,
-                "Other mean (%)": model.params["const"],
-                "Effect mean (%)":
-                    model.params["const"] + model.params["Dummy"],
-                "Difference (%)": model.params["Dummy"],
-                "t-stat": model.tvalues["Dummy"],
-                "p-value": model.pvalues["Dummy"]
+                "Period":               period,
+                "Industry":             industry,
+                "Effect":               effect_name,
+                "Other mean (%)":       model.params["const"],
+                "Effect mean (%)":      model.params["const"] + model.params["Dummy"],
+                "Difference (%)":       model.params["Dummy"],
+                "t-stat":               model.tvalues["Dummy"],
+                "p-value":              model.pvalues["Dummy"]
             })
 
 monday_results = pd.DataFrame(results["monday"]).round(4)
 month_results = pd.DataFrame(results["month"]).round(4)
 
-monday_results.to_csv(
-    predictive_outdir / "monday_effect_subperiods.csv",
-    index=False
-)
+monday_results.to_csv(predictive_outdir / "monday_effect_subperiods.csv")
+month_results.to_csv(predictive_outdir / "month_effect_subperiods.csv")
 
-month_results.to_csv(
-    predictive_outdir / "month_effect_subperiods.csv",
-    index=False
-)
 
 
