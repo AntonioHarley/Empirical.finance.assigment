@@ -45,7 +45,7 @@ for industry in industries:
         np.nan
     )    
 
-start_date = pd.Timestamp("1963-07-01")
+start_date = pd.Timestamp("1926-07-01")
 
 daily_returns = (
     raw.loc[raw["Date"] >= start_date]
@@ -78,7 +78,7 @@ stats_path = setting_outdir / "Industry descriptive statistics.csv"
 corr_path = setting_outdir / "Industry correlation.csv"
 
 stats.to_csv(stats_path)
-corr.to_csv(stats_path)
+corr.to_csv(corr_path)
 
 for industry in industries:
     plt.figure(figsize=(8, 5))
@@ -123,6 +123,7 @@ daily_returns.to_csv(clean_path)
 
 periods = {
     "Full": (None, None),
+    "1926-1962": ("1926-07-01", "1962-12-31"),
     "1963-1977": ("1963-07-01", "1977-12-31"),
     "1978-2002": ("1978-01-01", "2002-12-31"),
     "2003-present": ("2003-01-01", None),
