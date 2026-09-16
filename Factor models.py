@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.api as sm
 from scipy.stats import shapiro
+import matplotlib.pyplot as plt
 
 folder = Path(__file__).parent
 
@@ -19,10 +20,12 @@ paths = {
 output_dir =        folder / "Factor models"
 capm_dir =          output_dir / "CAPM"
 ff5_dir =           output_dir / "FF5"
+timeseries_dir =    output_dir / "Time-Series"
 
 output_dir.mkdir(exist_ok = True)
 capm_dir.mkdir(exist_ok = True)
 ff5_dir.mkdir(exist_ok = True)
+timeseries_dir.mkdir(exist_ok = True)
 output_dir.mkdir(parents=True, exist_ok=True)
 
 industries = ["Oil", "Banks", "Txtls", "Toys", "Rtail"]
@@ -181,7 +184,6 @@ ff5_factors = [
 ]
 
 
-
 ff5_data = (
     monthly_data["returns"][industries]
     .join(
@@ -198,7 +200,19 @@ ff5_data = (
     .dropna()
 )
 
+for factors in ff5_factors:
+    plt.figure(figsize=(10, 5))
+    plt.plot(ff5_data[factors])
+    plt.title(f"{factors} — Monthly Returns")
+    plt.xlabel("Date")
+    plt.ylabel("Monthly return (%)")
 
+    plt.savefig(
+        timeseries_dir / f"{factors}_timeseries.png",
+        dpi=300,
+        bbox_inches="tight"
+    )
+    plt.close()
 
 ff5_corr = ff5_data.corr()
 ff5_data.to_csv(ff5_dir / "ff5_data.csv")
