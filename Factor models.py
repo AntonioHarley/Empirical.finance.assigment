@@ -51,7 +51,6 @@ def read_monthly(path):
 
     header = lines[start - 1]
     columns = ["Date"] + header.replace(",", " ").split()
-
     separator = "," if "," in header else r"\s+"
 
     raw = pd.read_csv(
@@ -116,17 +115,17 @@ print(
 print(f"Observations: {len(capm_data)}")
 
 capm_stats = pd.DataFrame({
-    "N":               capm_data.count(),
-    "Mean (%)":        capm_data.mean().round(2),
-    "Std. dev. (%)":   capm_data.std(ddof=1).round(4),
-    "Min (%)":         capm_data.min().round(2),
-    "25th pct. (%)":   capm_data.quantile(0.25).round(2),
-    "Median (%)":      capm_data.median().round(2),
-    "75th pct. (%)":   capm_data.quantile(0.75).round(2),
-    "Max (%)":         capm_data.max().round(2),
-    "Skewness":        capm_data.skew().round(3),
-    "Excess kurtosis": capm_data.kurt().round(3),
-    "Shapiro (P-value)": capm_data.apply(lambda x: shapiro(x.dropna()).pvalue).round(4),
+    "N":                    capm_data.count(),
+    "Mean (%)":             capm_data.mean().round(2),
+    "Std. dev. (%)":        capm_data.std(ddof=1).round(4),
+    "Min (%)":              capm_data.min().round(2),
+    "25th pct. (%)":        capm_data.quantile(0.25).round(2),
+    "Median (%)":           capm_data.median().round(2),
+    "75th pct. (%)":        capm_data.quantile(0.75).round(2),
+    "Max (%)":              capm_data.max().round(2),
+    "Skewness":             capm_data.skew().round(3),
+    "Excess kurtosis":      capm_data.kurt().round(3),
+    "Shapiro (P-value)":    capm_data.apply(lambda x: shapiro(x.dropna()).pvalue).round(4),
 })
 capm_stats.to_csv(capm_dir / "capm_descriptive_statistics.csv")
 print(capm_stats)
@@ -147,12 +146,13 @@ for portfolio in excess_returns.columns:
     fit = sm.OLS(y, X).fit(use_t=False)
 
     results.append({
-        "Portfolio": portfolio,
-        "Alpha (%/month)": fit.params["const"],
-        "Alpha p-value": fit.pvalues["const"],
-        "Beta": fit.params["Mkt-RF"],
-        "R²": fit.rsquared,
-        "Adj R²": fit.rsquared_adj,
+        "Portfolio":            portfolio,
+        "Alpha (%/month)":      fit.params["const"],
+        "Alpha t-stat":         fit.tvalues["const"],
+        "Alpha p-value":        fit.pvalues["const"],
+        "Beta":                 fit.params["Mkt-RF"],
+        "R²":                   fit.rsquared,
+        "Adj R²":               fit.rsquared_adj,
     })
 
 
@@ -245,33 +245,22 @@ for portfolio in ff5_excess_returns.columns:
         "Portfolio":        portfolio,
         "Alpha (%/month)":  fit.params["const"],
         "Alpha p-value":    fit.pvalues["const"],
-        "Beta Mkt-RF":      fit.params["Mkt-RF"],
-        "Beta SMB":         fit.params["SMB"],
-        "Beta HML":         fit.params["HML"],
-        "Beta RMW":         fit.params["RMW"],
-        "Beta CMA":         fit.params["CMA"],
-        "R²":               fit.rsquared,
-        "Adj R²":           fit.rsquared_adj,
+        "Beta Mkt-RF":              fit.params["Mkt-RF"],
+        "Beta Mkt-RF p-value":      fit.pvalues["Mkt-RF"],
+        "Beta SMB":                 fit.params["SMB"],
+        "Beta SMB p-value":         fit.pvalues["SMB"],
+        "Beta HML":                 fit.params["HML"],
+        "Beta HML p-value":         fit.pvalues["HML"],
+        "Beta RMW":                 fit.params["RMW"],
+        "Beta RMW p-value":         fit.pvalues["RMW"],
+        "Beta CMA":                 fit.params["CMA"],
+        "Beta CMA p-value":         fit.pvalues["CMA"],
+        "R²":                       fit.rsquared,
+        "Adj R²":                   fit.rsquared_adj,
     })
 
 
 ff5_results = pd.DataFrame(ff5_results)
 ff5_results.to_csv( ff5_dir / "ff5_regression.csv",index=False)
 
-print(
-    ff5_results.to_string(
-        index=False,
-        float_format=lambda value:
-            f"{value:.4f}",
-        formatters={
-            "Alpha p-value":
-                lambda p:
-                (
-                    "<0.0001"
-                    if p < 0.0001
-                    else f"{p:.4f}"
-                )
-        }
-    )
-)
 
