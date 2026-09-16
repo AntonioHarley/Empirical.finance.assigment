@@ -8,16 +8,19 @@ import statsmodels.api as sm
 import calendar
 
 data = Path(__file__).parent / "49_Industry_Portfolios_Daily.csv"
-outdir = Path(__file__).parent / "Setting the stage"
-histogram_dir = outdir / "histograms"
-timeseries_dir = outdir / "timeseries"
+setting_outdir = Path(__file__).parent / "Setting the stage"
+predictive_outdir = Path(__file__).parent / "Predictability"
 
-outdir.mkdir(exist_ok = True)
+histogram_dir = setting_outdir / "histograms"
+timeseries_dir = setting_outdir / "timeseries"
+
+setting_outdir.mkdir(exist_ok = True)
+predictive_outdir.mkdir(exist_ok = True)
 histogram_dir.mkdir(exist_ok = True)
 timeseries_dir.mkdir(exist_ok = True)
+
+
 lines = data.read_text(encoding="utf-8", errors = "replace").splitlines()
-
-
 section = next(i for i, line in enumerate(lines) if lines[i].strip() == "Average Value Weighted Returns -- Daily" in line)
 header = section + 1 
 end = next(i for i in range(header+1, len(lines)) if lines[i].strip() == "")
@@ -71,8 +74,8 @@ stats = pd.DataFrame({
 corr = industry_returns.corr()
 
 print(stats)
-stats_path = outdir / "Industry descriptive statistics.csv"
-corr_path = outdir / "Industry correlation.csv"
+stats_path = setting_outdir / "Industry descriptive statistics.csv"
+corr_path = setting_outdir / "Industry correlation.csv"
 
 stats.to_csv(stats_path)
 corr.to_csv(stats_path)
@@ -115,7 +118,7 @@ for industry in industries:
     plt.close()
 
 
-clean_path = outdir / "selected_industry_returns_value_weighted_daily.csv"
+clean_path = setting_outdir / "selected_industry_returns_value_weighted_daily.csv"
 daily_returns.to_csv(clean_path)
 
 periods = {
@@ -166,12 +169,12 @@ monday_results = pd.DataFrame(results["monday"]).round(4)
 month_results = pd.DataFrame(results["month"]).round(4)
 
 monday_results.to_csv(
-    outdir / "monday_effect_subperiods.csv",
+    predictive_outdir / "monday_effect_subperiods.csv",
     index=False
 )
 
 month_results.to_csv(
-    outdir / "month_effect_subperiods.csv",
+    predictive_outdir / "month_effect_subperiods.csv",
     index=False
 )
 
